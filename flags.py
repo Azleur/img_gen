@@ -1,4 +1,5 @@
 """Example use for img_gen: create country flags programmatically."""
+import math
 import img_gen
 
 def pfTricolor(x, y, rgb1, rgb2, rgb3, horizontal=False):
@@ -12,7 +13,7 @@ def pfTricolor(x, y, rgb1, rgb2, rgb3, horizontal=False):
 	return rgb3 + (255,)
 
 def MakeFlags():
-	"""Make all the flags (8 total). Saves them in the working directory as PNG files."""
+	"""Make all the flags (9 total). Saves them in the working directory as PNG files."""
 	MakeBritishFlag()
 	MakeCatalanFlag()
 	MakeSpanishFlag()
@@ -21,6 +22,7 @@ def MakeFlags():
 	MakeFrenchFlag()
 	MakeItalianFlag()
 	MakeRussianFlag()
+	MakeGreekFlag()
 
 def MakeBritishFlag():
 	"""Make the Union Jack (simplified). Saves it in the working directory as a PNG file."""
@@ -53,6 +55,10 @@ def MakeItalianFlag():
 def MakeRussianFlag():
 	"""Make the Russian flag. Saves it in the working directory as a PNG file."""
 	img_gen.MakeImage(pfRussian, "ru")
+
+def MakeGreekFlag():
+	"""Make the Greek flag. Saves it in the working directory as a PNG file."""
+	img_gen.MakeImage(pfGreek, "gr")
 
 @img_gen.circleCutout()
 def pfBritish(x, y):
@@ -122,6 +128,26 @@ def pfItalian(x, y):
 def pfRussian(x, y):
 	"""Paint function for the Russian flag. Should be provided as argument for img_gen.MakeImage."""
 	return pfTricolor(x, y, (255, 255, 255), (30, 25, 240), (240, 30, 40), horizontal=True)
+
+@img_gen.circleCutout()
+def pfGreek(x, y):
+	"""Paint function for the Greek flag. Should be provided as argument for img_gen.MakeImage."""
+	white = (255, 255, 255, 255)
+	blue = (20, 40, 200, 255)
+	# Remap x,y from -1..+1 to 0..9 and reverse y.
+	x = (x + 1.0) * 4.5
+	y = (1.0 - y) * 4.5
+	
+	if x < 5 and y < 5:
+		if math.floor(x) == 2 or math.floor(y) == 2:
+			return white
+		else:
+			return blue
+	else:
+		if (y % 2) < 1:
+			return blue
+		else:
+			return white
 
 if __name__ == "__main__":
 	MakeFlags()

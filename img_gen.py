@@ -1,5 +1,5 @@
 """Image generation utility module."""
-
+import math
 import os
 from PIL import Image
 
@@ -37,6 +37,11 @@ def MakeImage(paintFunction, name="img", size=256, channels='RGBA', multisample=
 	finalImage.save(filename, 'PNG')
 
 def circleCutout(numChannels=4):
+	"""Decorator factory. Add to a paint function to apply a circular alpha mask to the image.
+	
+	Keyword arguments:
+	numChannels -- Number of channels the paint function returns (default: 4).
+	"""
 	def decorator(paintFunction):
 		def wrapper(x, y):
 			if x * x + y * y > 1:
@@ -45,3 +50,13 @@ def circleCutout(numChannels=4):
 				return paintFunction(x, y)
 		return wrapper
 	return decorator
+
+def softCutout(paintFunction):
+	"""Decorator. Add to a non-transparent paint function to apply a fading alpha mask to the image."""
+	def wrapper(x, y):
+		l = math.sqrt(x * x + y * y)
+		t = 0 if l > 1 else 1.0 - l
+		smooth = t * t * t * (10.0 + t * (-15.0 + 6.0 * t)) # Smootherstep
+		a = int(255 * smooth)
+		return paintFunction(x, y) + (a,)
+	return wrapper
