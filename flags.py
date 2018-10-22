@@ -1,36 +1,62 @@
-from img_gen import MakeImage
+"""Example use for img_gen: create country flags programmatically."""
+import img_gen
+
+def pfTricolor(x, y, rgb1, rgb2, rgb3, horizontal=False):
+	"""Create tricolor flags, either horizontal or vertical."""
+	if horizontal:
+		x = -y
+	if x < -1.0 / 3.0:
+		return rgb1 + (255,)
+	if x < +1.0 / 3.0:
+		return rgb2 + (255,)
+	return rgb3 + (255,)
 
 def MakeFlags():
-	MakeEnglishFlag()
+	"""Make all the flags (8 total). Saves them in the working directory as PNG files."""
+	MakeBritishFlag()
 	MakeCatalanFlag()
 	MakeSpanishFlag()
 	MakeSwedishFlag()
 	MakeNorwegianFlag()
 	MakeFrenchFlag()
+	MakeItalianFlag()
+	MakeRussianFlag()
 
-def MakeEnglishFlag():
-	MakeImage(pfEnglish, "en")
+def MakeBritishFlag():
+	"""Make the Union Jack (simplified). Saves it in the working directory as a PNG file."""
+	img_gen.MakeImage(pfBritish, "en")
 
 def MakeCatalanFlag():
-	MakeImage(pfCatalan, "ca")
+	"""Make the Catalan flag. Saves it in the working directory as a PNG file."""
+	img_gen.MakeImage(pfCatalan, "ca")
 
 def MakeSpanishFlag():
-	MakeImage(pfSpanish, "es")
+	"""Make the Spanish flag (without shield). Saves it in the working directory as a PNG file."""
+	img_gen.MakeImage(pfSpanish, "es")
 
 def MakeSwedishFlag():
-	MakeImage(pfSwedish, "se")
+	"""Make the Swedish flag. Saves it in the working directory as a PNG file."""
+	img_gen.MakeImage(pfSwedish, "se")
 
 def MakeNorwegianFlag():
-	MakeImage(pfNorwegian, "no")
+	"""Make the Norwegian flag. Saves it in the working directory as a PNG file."""
+	img_gen.MakeImage(pfNorwegian, "no")
 
 def MakeFrenchFlag():
-	MakeImage(pfFrench, "fr")
+	"""Make the French flag. Saves it in the working directory as a PNG file."""
+	img_gen.MakeImage(pfFrench, "fr")
 
-def pfEnglish(x, y):
-	l2 = (x * x + y * y)
-	if l2 > 1:
-		return (0, 0, 0, 0)
-	
+def MakeItalianFlag():
+	"""Make the Italian flag. Saves it in the working directory as a PNG file."""
+	img_gen.MakeImage(pfItalian, "it")
+
+def MakeRussianFlag():
+	"""Make the Russian flag. Saves it in the working directory as a PNG file."""
+	img_gen.MakeImage(pfRussian, "ru")
+
+@img_gen.circleCutout()
+def pfBritish(x, y):
+	"""Paint function for the Union Jack (simplified). Should be provided as argument for img_gen.MakeImage."""
 	if abs(x) < 0.15 or abs(y) < 0.15:
 		return (255, 60, 60, 255)
 	if abs(x) < 0.25 or abs(y) < 0.25:
@@ -45,11 +71,9 @@ def pfEnglish(x, y):
 	
 	return (50, 50, 220, 255)
 
+@img_gen.circleCutout()
 def pfCatalan(x, y):
-	l2 = (x * x + y * y)
-	if l2 > 1:
-		return (0, 0, 0, 0)
-
+	"""Paint function for the Catalan flag. Should be provided as argument for img_gen.MakeImage."""
 	u = (x + 1.0) / 2.0
 	sign = (u * 9) % 2
 	if sign < 1:
@@ -57,31 +81,25 @@ def pfCatalan(x, y):
 
 	return (220, 80, 50, 255)
 
+@img_gen.circleCutout()
 def pfSpanish(x, y):
-	l2 = (x * x + y * y)
-	if l2 > 1:
-		return (0, 0, 0, 0)
-
+	"""Paint function for the Spanish flag (without shield). Should be provided as argument for img_gen.MakeImage."""
 	if abs(y) < 0.5:
 		return (250, 250, 60, 255)
 
 	return (250, 70, 60, 255)
 
+@img_gen.circleCutout()
 def pfSwedish(x, y):
-	l2 = (x * x + y * y)
-	if l2 > 1:
-		return (0, 0, 0, 0)
-	
+	"""Paint function for the Swedish flag. Should be provided as argument for img_gen.MakeImage."""
 	if abs(x + 0.25) < 0.2 or abs(y) < 0.2:
 		return (255, 255, 60, 255)
 	
 	return (80, 80, 255, 255)
 
+@img_gen.circleCutout()
 def pfNorwegian(x, y):
-	l2 = (x * x + y * y)
-	if l2 > 1:
-		return (0, 0, 0, 0)
-	
+	"""Paint function for the Norwegian flag. Should be provided as argument for img_gen.MakeImage."""
 	xx = x + 0.25
 	if abs(xx) < 0.15 or abs(y) < 0.15:
 		return (30, 30, 255, 255)
@@ -90,17 +108,20 @@ def pfNorwegian(x, y):
 	
 	return (255, 70, 70, 255)
 
+@img_gen.circleCutout()
 def pfFrench(x, y):
-	l2 = (x * x + y * y)
-	if l2 > 1:
-		return (0, 0, 0, 0)
-	
-	if x < -1.0 / 3.0:
-		return (40, 30, 250, 255)
-	if x > +1.0 / 3.0:
-		return (250, 40, 50, 255)
-	
-	return (255, 255, 255, 255)
+	"""Paint function for the French flag. Should be provided as argument for img_gen.MakeImage."""
+	return pfTricolor(x, y, (40, 30, 250), (255, 255, 255), (250, 40, 50))
+
+@img_gen.circleCutout()
+def pfItalian(x, y):
+	"""Paint function for the French flag. Should be provided as argument for img_gen.MakeImage."""
+	return pfTricolor(x, y, (50, 220, 80), (255, 255, 255), (240, 40, 45))
+
+@img_gen.circleCutout()
+def pfRussian(x, y):
+	"""Paint function for the Russian flag. Should be provided as argument for img_gen.MakeImage."""
+	return pfTricolor(x, y, (255, 255, 255), (30, 25, 240), (240, 30, 40), horizontal=True)
 
 if __name__ == "__main__":
 	MakeFlags()
