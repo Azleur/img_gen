@@ -5,10 +5,10 @@ from PIL import Image
 
 def MakeImage(paintFunction, name="img", size=256, channels='RGBA', multisample=4):
 	"""Save a square PNG image in the current directory, as defined by a resolution-independent painting function.
-	
+
 	Mandatory argument:
 	paintFunction -- Painting function. Takes in two floating point parameters (x, y) (coordinates in range -1..+1) and returns an integer tuple corresponding to the color of one pixel.
-	
+
 	Keyword arguments:
 	name -- Saved image name, without termination. A count will be added if the name is already in use.
 	size -- Final image size, in pixels per side (it will be a square image).
@@ -17,7 +17,7 @@ def MakeImage(paintFunction, name="img", size=256, channels='RGBA', multisample=
 	"""
 	fullSize = size * multisample
 	scaleFactor = 2.0 / (fullSize - 1)
-	
+
 	filename = name + ".png"
 	filename_counter = 0
 	while os.path.exists(filename):
@@ -38,7 +38,7 @@ def MakeImage(paintFunction, name="img", size=256, channels='RGBA', multisample=
 
 def circleCutout(numChannels=4):
 	"""Decorator factory. Add to a paint function to apply a circular alpha mask to the image.
-	
+
 	Keyword arguments:
 	numChannels -- Number of channels the paint function returns (default: 4).
 	"""
@@ -60,3 +60,10 @@ def softCutout(paintFunction):
 		a = int(255 * smooth)
 		return paintFunction(x, y) + (a,)
 	return wrapper
+
+def pfHello(x, y):
+	"""Example paint function. Use it as an argument to MakeImage()."""
+	return (255, 0, 0, 255) if x > y else (0, 255, 0, 255)
+
+if __name__ == "__main__":
+	MakeImage(pfHello, "hello")
